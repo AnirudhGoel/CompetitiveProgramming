@@ -19,7 +19,7 @@ int main() {
 		n = N + 1;
 		total = 0;
 		cin>>K;
-		while(m <= n)
+		while(m < n-1)
 		{
 			m++;
 			total += A[m];
