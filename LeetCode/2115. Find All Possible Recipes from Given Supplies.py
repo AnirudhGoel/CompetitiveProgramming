@@ -71,3 +71,33 @@ class Solution:
                 final_list.append(recipe)
         
         return final_list
+
+# Solution 2: Using graph and topological sort
+from collections import defaultdict
+
+class Solution:
+    def findAllRecipes(self, recipes: List[str], ingredients: List[List[str]], supplies: List[str]) -> List[str]:
+        ingredient_recipe_map = defaultdict(list)
+        ans = list()
+
+        for i in range(len(recipes)):
+            for ingredient in ingredients[i]:
+                ingredient_recipe_map[ingredient].append(recipes[i])
+
+        indeg = {recipes[i]: len(ingredients[i]) for i in range(len(recipes))}
+
+        q = list()
+        q.extend(supplies)
+
+        while q:
+            supply = q.pop()
+
+            if supply in ingredient_recipe_map:
+                for recipe in ingredient_recipe_map[supply]:
+                    indeg[recipe] -= 1
+
+                    if indeg[recipe] == 0:
+                        q.append(recipe)
+                        ans.append(recipe)
+
+        return ans
