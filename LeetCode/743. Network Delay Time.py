@@ -67,3 +67,36 @@ class Solution:
                     q.append(adj)
 
         return max(travel_time) if max(travel_time) != float('inf') else -1
+
+# Solution 3: Djikstra Algo on my own, for practice
+import heapq
+
+class Solution:
+    def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
+        dj_time = [float('inf') for _ in range(n)]
+        dj_time[k-1] = 0
+
+        adj_list = [[] for _ in range(n)]
+        for u, v, w in times:
+            adj_list[u-1].append([v-1, w])
+
+        heap = []
+        heapq.heapify(heap)
+        heapq.heappush(heap, [0, k-1])
+
+        visited = set()
+
+        while heap:
+            curr_time, curr_node = heapq.heappop(heap)
+
+            if curr_node in visited:
+                continue
+
+            visited.add(curr_node)
+
+            for v, w in adj_list[curr_node]:
+                if curr_time + w < dj_time[v]:
+                    dj_time[v] = curr_time + w
+                    heapq.heappush(heap, [curr_time + w, v])
+
+        return -1 if max(dj_time) == float('inf') else max(dj_time)

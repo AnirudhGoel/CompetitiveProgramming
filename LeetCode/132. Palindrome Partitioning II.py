@@ -50,3 +50,47 @@ class Solution:
         dp = dict()
 
         return self.partition(s, dp)
+
+# Solution 2: Expanding around the center
+# 93% faster, only trick is to handle case for l-1 going < 0
+class Solution:
+    def checkPalin(self, s, l, r, dp):
+        while 0 <= l <= r < len(s) and s[l] == s[r]:
+            if l == 0:
+                prev_cut = -1
+            else:
+                prev_cut = dp[l-1]
+            dp[r] = min(dp[r], prev_cut + 1)
+
+            l -= 1
+            r += 1
+
+
+    def minCut(self, s: str) -> int:
+        dp = [i for i in range(len(s))]
+
+        for i in range(len(s)):
+            self.checkPalin(s, i, i, dp)
+            self.checkPalin(s, i, i+1, dp)
+
+        return dp[-1]
+
+# Alternate Solution 1:
+# Just for practice (proves there's more than one way to solve a problem even with the same algo)
+class Solution:
+    def partition(self, s, mem):
+        if s == s[::-1]:
+            return 0
+
+        if s in mem:
+            return mem[s]
+
+        for i in range(1, len(s)):
+            if s[:i] == s[:i][::-1]:
+                mem[s] = min(mem[s], 1 + self.partition(s[i:], mem))
+        return mem[s]
+
+    def minCut(self, s: str) -> int:
+        mem = defaultdict(lambda: float('inf'))
+
+        return self.partition(s, mem)
